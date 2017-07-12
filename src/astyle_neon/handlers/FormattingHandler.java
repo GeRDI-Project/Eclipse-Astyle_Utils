@@ -43,19 +43,19 @@ public class FormattingHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         // get window and project
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        IProject currentProject = getActiveProject(window);
+        IProject currentProject = getActiveProject(event);
 
         // format only if we found an active project
         String statusMessage;
 
         if (currentProject != null) {
             // format project and memorize the status message
-            statusMessage = formatProject(currentProject, window);
+            statusMessage = formatProject(currentProject);
         } else
             statusMessage = ERROR_NO_PROJECT;
 
         // notify the user about the status
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
         MessageDialog.openInformation(window.getShell(), ASTYLE_NAME, statusMessage);
 
         return null;
@@ -67,11 +67,9 @@ public class FormattingHandler extends AbstractHandler
      *
      * @param project
      *            the project of which the source files are formatted
-     * @param window
-     *            the window from where the event was triggered
      * @return a message describing the status of the formatting operation
      */
-    private String formatProject(IProject project, IWorkbenchWindow window)
+    private String formatProject(IProject project)
     {
         // get astyle binary path from preferences
         String binPath = Activator.getDefault().getPreferenceStore()
@@ -116,34 +114,48 @@ public class FormattingHandler extends AbstractHandler
     /**
      * Retrieves the currently active Project in Eclipse.
      *
-     * @param window
-     *            the window from where the event was triggered
-     * @return a project thatis associated with a currently selected file or
+     * @param event
+     *            the event that triggered the command
+     * @return a project that is associated with a currently selected file or
      *         editor view
+     * @throws ExecutionException this exception can occur while trying to retrieve the active window
      */
-    private IProject getActiveProject(IWorkbenchWindow window)
+    private IProject getActiveProject(ExecutionEvent event) throws ExecutionException
     {
         IProject currentProject = null;
 
-        // get selection
-        IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
+        // check which window is focussed
+        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith("Explorer");
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 
-        // get active editor
-        IEditorPart activeEditor = window.getActivePage().getActiveEditor();
+        // get an adaptable in order to retrieve its project
+        IAdaptable adaptable = null;
 
-        // check if something is selected or an active editor exists
-        if ((selection != null && !selection.isEmpty()) || activeEditor != null) {
-            // get some adaptable object
-            IAdaptable adaptable = selection == null || selection.isEmpty()
-                                   ? activeEditor.getEditorInput()
-                                   : (IAdaptable) selection.getFirstElement();
+        if (isExplorerFocussed) {
+            // get selection
+            IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
 
+            if (!selection.isEmpty())
+                adaptable = (IAdaptable) selection.getFirstElement();
+        }
+
+        // fallback: choose the project of the active editor
+        if (adaptable == null) {
+            // get active editor
+            IEditorPart activeEditor = window.getActivePage().getActiveEditor();
+
+            if (activeEditor != null)
+                adaptable = activeEditor.getEditorInput();
+        }
+
+        if (adaptable != null) {
             // retrieve current project from adaptable
             currentProject = adaptable.getAdapter(IProject.class);
 
             // fallback: get a resource from the adaptable and then its project
             if (currentProject == null) {
                 IResource resource = adaptable.getAdapter(IResource.class);
+
                 if (resource != null)
                     currentProject = resource.getProject();
             }
