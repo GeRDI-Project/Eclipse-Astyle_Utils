@@ -1,8 +1,11 @@
 package astyle_neon.handlers;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -35,8 +38,8 @@ public class FormattingHandler extends AbstractHandler
     private static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
     private static final String ERROR_NO_PATH = "Could not format Project '%s':\nPlease, specify the AStyle paths in the preferences.";
     private static final String ERROR_GENERIC = "Could not format Project '%s':\nAn error occurred during the formatting process.";
-    private static final String ERROR_RETURN = "Could not format Project '%s':\nReturn code: %d";
-    private static final String SUCCESS = "Formatted all files in Project '%s'!";
+    private static final String ERROR_RETURN = "%s\n\n%s\n\nCould not format Project '%s':\nReturn code: %d";
+    private static final String SUCCESS = "%s\n\nFormatted all files in Project '%s'!";
     private static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
     private static final String PROJECT_SOURCE_DIRECTORY = "src";
 
@@ -45,7 +48,6 @@ public class FormattingHandler extends AbstractHandler
     private static final String OPTIONS_CMD_PARAM = "--options=\"%s\"";
     private static final String RECURSIVE_CMD_PARAM = "--recursive";
     private static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
-    private static final String ONLY_FORMATTED_CMD_PARAM = "--formatted";
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -64,6 +66,7 @@ public class FormattingHandler extends AbstractHandler
 
         // notify the user about the status
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        System.out.println( statusMessage );
         MessageDialog.openInformation(window.getShell(), ASTYLE_NAME, statusMessage);
 
         return null;
@@ -99,18 +102,32 @@ public class FormattingHandler extends AbstractHandler
             String.format(ASTYLE_BIN_CMD, binPath),
             RECURSIVE_CMD_PARAM,
             NO_BACKUP_CMD_PARAM,
-            ONLY_FORMATTED_CMD_PARAM,
             String.format(OPTIONS_CMD_PARAM, optionsPath),
             String.format(TARGET_FOLDER_CMD, sourcePath)
         };
-
+        
+        // log process
+        System.out.println( "Executing:\n" + String.join( " ", formattingCommand ));
+        
+        String processOutput;
         try {
             // execute formatting command
             Process formattingProcess = Runtime.getRuntime().exec(formattingCommand);
+            
+            // read returned string
+            BufferedReader outputReader = new BufferedReader(new InputStreamReader(formattingProcess.getInputStream()));
             int returnCode = formattingProcess.waitFor();
-
+            
+            processOutput = outputReader.lines().collect( Collectors.joining("\n") );
+            
             if (returnCode != 0)
-                return String.format(ERROR_RETURN, project.getName(), returnCode);
+            {
+            	// read returned error string
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(formattingProcess.getErrorStream()));
+                String errorOutput = errorReader.lines().collect( Collectors.joining("\n") );
+                
+                return String.format(ERROR_RETURN, processOutput, errorOutput, project.getName(), returnCode);
+            }
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -122,10 +139,10 @@ public class FormattingHandler extends AbstractHandler
             project.refreshLocal(IResource.DEPTH_INFINITE, null);
         } catch (CoreException e) {
             e.printStackTrace();
-            return String.format(SUCCESS_REFRESH, project.getName());
+            return String.format(SUCCESS_REFRESH, processOutput, project.getName());
         }
 
-        return String.format(SUCCESS, project.getName());
+        return String.format(SUCCESS, processOutput, project.getName());
     }
 
 
