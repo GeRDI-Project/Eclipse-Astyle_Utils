@@ -111,12 +111,20 @@ public class FormattingHandler extends AbstractHandler
         
         String processOutput;
         try {
+        	File testOptions = new File( optionsPath);
+        	System.out.println( "exists? " +testOptions.exists() );
+        	System.out.println(testOptions.getAbsolutePath() );
+        	System.out.println(testOptions.getPath() );
+        	System.out.println("readable? " + testOptions.canRead() );
+        	System.out.println("executable? " + testOptions.canExecute() );
+        	
+        	
             // execute formatting command
         	ProcessBuilder pb = new ProcessBuilder(
         			String.format(ASTYLE_BIN_CMD, binPath),
                     RECURSIVE_CMD_PARAM,
                     NO_BACKUP_CMD_PARAM,
-                    String.format(OPTIONS_CMD_PARAM, optionsPath),
+                    String.format(OPTIONS_CMD_PARAM, testOptions.getAbsolutePath()),
                     "--verbose",
                     String.format(TARGET_FOLDER_CMD, sourcePath)
 			);
