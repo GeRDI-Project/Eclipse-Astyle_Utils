@@ -43,7 +43,7 @@ public class FormattingHandler extends AbstractHandler
     private static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
     private static final String PROJECT_SOURCE_DIRECTORY = "src";
 
-    private static final String TARGET_FOLDER_CMD = "'%s" + File.separatorChar + "*'";
+    private static final String TARGET_FOLDER_CMD = "%s" + File.separatorChar + "*";
     private static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
     private static final String OPTIONS_CMD_PARAM = "--options=%s";
     private static final String RECURSIVE_CMD_PARAM = "--recursive";
@@ -97,30 +97,11 @@ public class FormattingHandler extends AbstractHandler
         // get source path from the project
         String sourcePath = project.getFolder(PROJECT_SOURCE_DIRECTORY).getLocation().toOSString();
 
-        // assemble command
-        /*String[] formattingCommand = {
-            String.format(ASTYLE_BIN_CMD, binPath),
-            RECURSIVE_CMD_PARAM,
-            NO_BACKUP_CMD_PARAM,
-            String.format(OPTIONS_CMD_PARAM, optionsPath),
-            String.format(TARGET_FOLDER_CMD, sourcePath)
-        };
-        
-        // log process
-        System.out.println( "Executing:\n" + String.join( " ", formattingCommand ));*/
-        
         String processOutput;
         try {
-        	File testOptions = new File( optionsPath);
-        	System.out.println( "exists? " +testOptions.exists() );
-        	System.out.println(testOptions.getPath() );
-        	System.out.println(testOptions.getCanonicalPath() );
-        	System.out.println("readable? " + testOptions.canRead() );
-        	System.out.println("executable? " + testOptions.canExecute() );
-        	System.out.println("writable? " + testOptions.canWrite() );
+        	File testOptions = new File( optionsPath);        	
         	
-        	
-            // execute formatting command
+            // assemble formatting command
         	ProcessBuilder pb = new ProcessBuilder(
         			String.format(ASTYLE_BIN_CMD, binPath),
                     RECURSIVE_CMD_PARAM,
@@ -128,8 +109,9 @@ public class FormattingHandler extends AbstractHandler
                     String.format(OPTIONS_CMD_PARAM, testOptions.getCanonicalPath()),
                     String.format(TARGET_FOLDER_CMD, sourcePath)
 			);
+        	
+        	// execute command
             Process formattingProcess = pb.start();
-            //Runtime.getRuntime().exec(formattingCommand);
             
             // read returned string
             BufferedReader outputReader = new BufferedReader(new InputStreamReader(formattingProcess.getInputStream()));
@@ -142,17 +124,7 @@ public class FormattingHandler extends AbstractHandler
             	// read returned error string
                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(formattingProcess.getErrorStream()));
                 String errorOutput = errorReader.lines().collect( Collectors.joining("\n") );
-                
-                System.out.println( "Test cat:" );
-            	ProcessBuilder pb2 = new ProcessBuilder("cat", testOptions.getCanonicalPath());
-                Process p2 = pb2.start();
-                BufferedReader outputReader2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
-                int returnCode2 = p2.waitFor();
-                String out2 = outputReader2.lines().collect( Collectors.joining("\n") );
-                BufferedReader errorReader2 = new BufferedReader(new InputStreamReader(formattingProcess.getErrorStream()));
-                out2 +="\n"+ errorReader2.lines().collect( Collectors.joining("\n") ) +"\nreturnCode: "+ returnCode2 ;
-                System.out.println( out2 );
-                
+                                
                 return String.format(ERROR_RETURN, processOutput, errorOutput, project.getName(), returnCode);
             }
 
