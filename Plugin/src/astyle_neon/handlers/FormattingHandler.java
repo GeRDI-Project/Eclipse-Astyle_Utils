@@ -117,6 +117,7 @@ public class FormattingHandler extends AbstractHandler
                     RECURSIVE_CMD_PARAM,
                     NO_BACKUP_CMD_PARAM,
                     String.format(OPTIONS_CMD_PARAM, optionsPath),
+                    "--verbose",
                     String.format(TARGET_FOLDER_CMD, sourcePath)
 			);
             Process formattingProcess = pb.start();
