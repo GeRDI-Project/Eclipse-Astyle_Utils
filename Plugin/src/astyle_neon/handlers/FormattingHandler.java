@@ -31,13 +31,21 @@ import org.eclipse.core.resources.IResource;
 public class FormattingHandler extends AbstractHandler
 {
     private static final String ASTYLE_NAME = "AStyle";
+    private static final String EXPLORER_SUFFIX = "Explorer";
     private static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
     private static final String ERROR_NO_PATH = "Could not format Project '%s':\nPlease, specify the AStyle paths in the preferences.";
     private static final String ERROR_GENERIC = "Could not format Project '%s':\nAn error occurred during the formatting process.";
+    private static final String ERROR_RETURN = "Could not format Project '%s':\nReturn code: %d";
     private static final String SUCCESS = "Formatted all files in Project '%s'!";
     private static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
     private static final String PROJECT_SOURCE_DIRECTORY = "src";
-    private static final String FORMATTING_COMMAND = "%s" + File.separatorChar + "astyle --options=\"%s\" --recursive --suffix=none \"%s" + File.separatorChar + "*\"";
+
+    private static final String TARGET_FOLDER_CMD = "\"%s" + File.separatorChar + "*\"";
+    private static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
+    private static final String OPTIONS_CMD_PARAM = "--options=\"%s\"";
+    private static final String RECURSIVE_CMD_PARAM = "--recursive";
+    private static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
+    private static final String ONLY_FORMATTED_CMD_PARAM = "--formatted";
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -87,12 +95,22 @@ public class FormattingHandler extends AbstractHandler
         String sourcePath = project.getFolder(PROJECT_SOURCE_DIRECTORY).getLocation().toOSString();
 
         // assemble command
-        String scriptCommand = String.format(FORMATTING_COMMAND, binPath, optionsPath, sourcePath);
+        String[] formattingCommand = {
+            String.format(ASTYLE_BIN_CMD, binPath),
+            RECURSIVE_CMD_PARAM,
+            NO_BACKUP_CMD_PARAM,
+            ONLY_FORMATTED_CMD_PARAM,
+            String.format(OPTIONS_CMD_PARAM, optionsPath),
+            String.format(TARGET_FOLDER_CMD, sourcePath)
+        };
 
         try {
             // execute formatting command
-            Process formattingProcess = Runtime.getRuntime().exec(scriptCommand);
-            formattingProcess.waitFor();
+            Process formattingProcess = Runtime.getRuntime().exec(formattingCommand);
+            int returnCode = formattingProcess.waitFor();
+
+            if (returnCode != 0)
+                return String.format(ERROR_RETURN, project.getName(), returnCode);
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -125,7 +143,7 @@ public class FormattingHandler extends AbstractHandler
         IProject currentProject = null;
 
         // check which window is focussed
-        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith("Explorer");
+        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(EXPLORER_SUFFIX);
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 
         // get an adaptable in order to retrieve its project

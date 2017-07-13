@@ -1,11 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: AStyle_Neon
-Bundle-SymbolicName: AStyle_Neon;singleton:=true
+Bundle-SymbolicName: AStyle_Plugin;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: astyle_neon.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.11.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
+ JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Kiel University
+Export-Package: astyle_neon,
+ astyle_neon.handlers,
+ astyle_neon.preferences
