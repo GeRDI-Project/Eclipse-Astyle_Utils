@@ -43,9 +43,9 @@ public class FormattingHandler extends AbstractHandler
     private static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
     private static final String PROJECT_SOURCE_DIRECTORY = "src";
 
-    private static final String TARGET_FOLDER_CMD = "\"%s" + File.separatorChar + "*\"";
+    private static final String TARGET_FOLDER_CMD = "'%s" + File.separatorChar + "*'";
     private static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
-    private static final String OPTIONS_CMD_PARAM = "--options=\"%s\"";
+    private static final String OPTIONS_CMD_PARAM = "--options=%s";
     private static final String RECURSIVE_CMD_PARAM = "--recursive";
     private static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
 

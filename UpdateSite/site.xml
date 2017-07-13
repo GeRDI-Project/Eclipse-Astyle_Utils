@@ -4,7 +4,7 @@
       https://build.se.informatik.uni-kiel.de/eus/astyle/
 A simple AStyle plugin that allows to format the current project.
    </description>
-   <feature url="features/AStyle_Feature_1.0.5.jar" id="AStyle_Feature" version="1.0.5">
+   <feature url="features/AStyle_Feature_1.0.6.jar" id="AStyle_Feature" version="1.0.6">
       <category name="astyleFormatting"/>
    </feature>
    <category-def name="astyleFormatting" label="AStyle Formatting">
