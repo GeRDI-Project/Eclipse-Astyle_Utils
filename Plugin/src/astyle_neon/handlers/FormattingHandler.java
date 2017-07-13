@@ -98,7 +98,7 @@ public class FormattingHandler extends AbstractHandler
         String sourcePath = project.getFolder(PROJECT_SOURCE_DIRECTORY).getLocation().toOSString();
 
         // assemble command
-        String[] formattingCommand = {
+        /*String[] formattingCommand = {
             String.format(ASTYLE_BIN_CMD, binPath),
             RECURSIVE_CMD_PARAM,
             NO_BACKUP_CMD_PARAM,
@@ -107,12 +107,20 @@ public class FormattingHandler extends AbstractHandler
         };
         
         // log process
-        System.out.println( "Executing:\n" + String.join( " ", formattingCommand ));
+        System.out.println( "Executing:\n" + String.join( " ", formattingCommand ));*/
         
         String processOutput;
         try {
             // execute formatting command
-            Process formattingProcess = Runtime.getRuntime().exec(formattingCommand);
+        	ProcessBuilder pb = new ProcessBuilder(
+        			String.format(ASTYLE_BIN_CMD, binPath),
+                    RECURSIVE_CMD_PARAM,
+                    NO_BACKUP_CMD_PARAM,
+                    String.format(OPTIONS_CMD_PARAM, optionsPath),
+                    String.format(TARGET_FOLDER_CMD, sourcePath)
+			);
+            Process formattingProcess = pb.start();
+            //Runtime.getRuntime().exec(formattingCommand);
             
             // read returned string
             BufferedReader outputReader = new BufferedReader(new InputStreamReader(formattingProcess.getInputStream()));
