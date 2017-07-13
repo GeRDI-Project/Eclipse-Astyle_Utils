@@ -2,7 +2,7 @@
 <feature
       id="AStyle_Feature"
       label="AStyle"
-      version="1.0.4"
+      version="1.0.5"
       provider-name="Kiel University"
       plugin="AStyle_Plugin">
 
@@ -36,6 +36,6 @@ limitations under the License.
          id="AStyle_Plugin"
          download-size="0"
          install-size="0"
-         version="1.0.4"/>
+         version="1.0.5"/>
 
 </feature>
