@@ -33,6 +33,9 @@ import org.eclipse.core.resources.IResource;
  */
 public class FormattingHandler extends AbstractHandler
 {
+	//private static final boolean IS_WINDOWS_ENVIRONMENT = (System.getProperty("os.name").toLowerCase().indexOf("windows")) != -1;
+    private static final String WHITESPACE_ESCAPE =  "\\ ";
+    
     private static final String ASTYLE_NAME = "AStyle";
     private static final String EXPLORER_SUFFIX = "Explorer";
     private static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
@@ -43,8 +46,9 @@ public class FormattingHandler extends AbstractHandler
     private static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
     private static final String PROJECT_SOURCE_DIRECTORY = "src";
 
-    private static final String TARGET_FOLDER_CMD = "%s" + File.separatorChar + "*";
+    private static final String TARGET_FOLDER_CMD = "%s" + File.separatorChar + "\\*";
     private static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
+    
     private static final String OPTIONS_CMD_PARAM = "--options=%s";
     private static final String RECURSIVE_CMD_PARAM = "--recursive";
     private static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
@@ -71,8 +75,7 @@ public class FormattingHandler extends AbstractHandler
 
         return null;
     }
-
-
+    
     /**
      * Formats all source files within a project
      *
@@ -97,16 +100,27 @@ public class FormattingHandler extends AbstractHandler
         // get source path from the project
         String sourcePath = project.getFolder(PROJECT_SOURCE_DIRECTORY).getLocation().toOSString();
 
+        // escape whitespaces of all paths
+        binPath = binPath.replaceAll( " ", WHITESPACE_ESCAPE );
+        optionsPath = optionsPath.replaceAll( " ", WHITESPACE_ESCAPE );
+        sourcePath = sourcePath.replaceAll( " ", WHITESPACE_ESCAPE );
+
         String processOutput;
+        
+        System.out.println( String.format(ASTYLE_BIN_CMD, binPath) 
+        			+ " " + RECURSIVE_CMD_PARAM 
+        			+ " " +NO_BACKUP_CMD_PARAM
+                    + " " + String.format(OPTIONS_CMD_PARAM, optionsPath)
+                    + " " + String.format(TARGET_FOLDER_CMD, sourcePath) );
         try {
-        	File testOptions = new File( optionsPath);        	
+        	//File testOptions = new File( optionsPath);        	
         	
             // assemble formatting command
         	ProcessBuilder pb = new ProcessBuilder(
         			String.format(ASTYLE_BIN_CMD, binPath),
                     RECURSIVE_CMD_PARAM,
                     NO_BACKUP_CMD_PARAM,
-                    String.format(OPTIONS_CMD_PARAM, testOptions.getCanonicalPath()),
+                    String.format(OPTIONS_CMD_PARAM, optionsPath),
                     String.format(TARGET_FOLDER_CMD, sourcePath)
 			);
         	
