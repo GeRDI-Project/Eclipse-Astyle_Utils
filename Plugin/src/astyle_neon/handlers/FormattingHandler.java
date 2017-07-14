@@ -33,9 +33,8 @@ import org.eclipse.core.resources.IResource;
  */
 public class FormattingHandler extends AbstractHandler
 {
-	//private static final boolean IS_WINDOWS_ENVIRONMENT = (System.getProperty("os.name").toLowerCase().indexOf("windows")) != -1;
     private static final String WHITESPACE_ESCAPE =  "\\ ";
-    
+
     private static final String ASTYLE_NAME = "AStyle";
     private static final String EXPLORER_SUFFIX = "Explorer";
     private static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
@@ -48,7 +47,7 @@ public class FormattingHandler extends AbstractHandler
 
     private static final String TARGET_FOLDER_CMD = "%s" + File.separatorChar + "\\*";
     private static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
-    
+
     private static final String OPTIONS_CMD_PARAM = "--options=%s";
     private static final String RECURSIVE_CMD_PARAM = "--recursive";
     private static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
@@ -70,12 +69,12 @@ public class FormattingHandler extends AbstractHandler
 
         // notify the user about the status
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        System.out.println( statusMessage );
+        System.out.println(statusMessage);
         MessageDialog.openInformation(window.getShell(), ASTYLE_NAME, statusMessage);
 
         return null;
     }
-    
+
     /**
      * Formats all source files within a project
      *
@@ -101,44 +100,35 @@ public class FormattingHandler extends AbstractHandler
         String sourcePath = project.getFolder(PROJECT_SOURCE_DIRECTORY).getLocation().toOSString();
 
         // escape whitespaces of all paths
-        binPath = binPath.replaceAll( " ", WHITESPACE_ESCAPE );
-        optionsPath = optionsPath.replaceAll( " ", WHITESPACE_ESCAPE );
-        sourcePath = sourcePath.replaceAll( " ", WHITESPACE_ESCAPE );
+        binPath = binPath.replaceAll(" ", WHITESPACE_ESCAPE);
+        optionsPath = optionsPath.replaceAll(" ", WHITESPACE_ESCAPE);
+        sourcePath = sourcePath.replaceAll(" ", WHITESPACE_ESCAPE);
+
+        // assemble formatting command
+        ProcessBuilder pb = new ProcessBuilder(
+            String.format(ASTYLE_BIN_CMD, binPath),
+            RECURSIVE_CMD_PARAM,
+            NO_BACKUP_CMD_PARAM,
+            String.format(OPTIONS_CMD_PARAM, optionsPath),
+            String.format(TARGET_FOLDER_CMD, sourcePath)
+        );
 
         String processOutput;
-        
-        System.out.println( String.format(ASTYLE_BIN_CMD, binPath) 
-        			+ " " + RECURSIVE_CMD_PARAM 
-        			+ " " +NO_BACKUP_CMD_PARAM
-                    + " " + String.format(OPTIONS_CMD_PARAM, optionsPath)
-                    + " " + String.format(TARGET_FOLDER_CMD, sourcePath) );
         try {
-        	//File testOptions = new File( optionsPath);        	
-        	
-            // assemble formatting command
-        	ProcessBuilder pb = new ProcessBuilder(
-        			String.format(ASTYLE_BIN_CMD, binPath),
-                    RECURSIVE_CMD_PARAM,
-                    NO_BACKUP_CMD_PARAM,
-                    String.format(OPTIONS_CMD_PARAM, optionsPath),
-                    String.format(TARGET_FOLDER_CMD, sourcePath)
-			);
-        	
-        	// execute command
+            // execute command
             Process formattingProcess = pb.start();
-            
+            int returnCode = formattingProcess.waitFor();
+
             // read returned string
             BufferedReader outputReader = new BufferedReader(new InputStreamReader(formattingProcess.getInputStream()));
-            int returnCode = formattingProcess.waitFor();
-            
-            processOutput = outputReader.lines().collect( Collectors.joining("\n") );
-            
-            if (returnCode != 0)
-            {
-            	// read returned error string
+            processOutput = outputReader.lines().collect(Collectors.joining("\n"));
+
+            // handle erroneous return code
+            if (returnCode != 0) {
+                // read returned error string
                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(formattingProcess.getErrorStream()));
-                String errorOutput = errorReader.lines().collect( Collectors.joining("\n") );
-                                
+                String errorOutput = errorReader.lines().collect(Collectors.joining("\n"));
+
                 return String.format(ERROR_RETURN, processOutput, errorOutput, project.getName(), returnCode);
             }
 
@@ -150,6 +140,7 @@ public class FormattingHandler extends AbstractHandler
         // try to refresh the project's changed files
         try {
             project.refreshLocal(IResource.DEPTH_INFINITE, null);
+            
         } catch (CoreException e) {
             e.printStackTrace();
             return String.format(SUCCESS_REFRESH, processOutput, project.getName());
