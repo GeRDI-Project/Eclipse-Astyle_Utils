@@ -19,10 +19,12 @@ package astyle_neon.handlers;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
-
 import astyle_neon.preferences.AStylePreferenceConstants;
 import astyle_neon.preferences.FeedbackStyle;
 
@@ -78,14 +80,13 @@ public class FeedbackMessage
     {
         switch (displayStyle) {
             case TextBox:
-                IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+                final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
                 MessageDialog.openInformation(window.getShell(), AStyleHandlerConstants.ASTYLE_NAME, message);
                 break;
 
             case StatusBar:
-                final IViewSite site = (IViewSite) HandlerUtil.getActivePart(event).getSite();
                 final String lastLineOfMessage = message.substring(message.lastIndexOf('\n') + 1);
-                site.getActionBars().getStatusLineManager().setMessage(lastLineOfMessage);
+                AStyleEclipseUtils.getActionBars(event).getStatusLineManager().setMessage(lastLineOfMessage);
                 break;
 
             case Disabled:

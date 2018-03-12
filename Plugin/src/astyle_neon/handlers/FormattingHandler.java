@@ -27,14 +27,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
-
 import astyle_neon.preferences.AStylePreferenceConstants;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -52,7 +46,7 @@ public final class FormattingHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         // get window and project
-        IProject currentProject = getActiveProject(event);
+        IProject currentProject = AStyleEclipseUtils.getActiveProject(event);
 
         // format only if we found an active project
         FeedbackMessage statusMessage;
@@ -79,7 +73,7 @@ public final class FormattingHandler extends AbstractHandler
      */
     private FeedbackMessage formatProject(IProject project)
     {
-        final ProcessBuilder formattingBuilder = getFormattingProcess(project);
+        final ProcessBuilder formattingBuilder = createFormattingProcess(project);
 
         // abort if any path is missing
         if (formattingBuilder == null)
@@ -148,61 +142,6 @@ public final class FormattingHandler extends AbstractHandler
 
 
     /**
-     * Retrieves the currently active Project in Eclipse.
-     *
-     * @param event
-     *            the event that triggered the command
-     * @return a project that is associated with a currently selected file or
-     *         editor view
-     * @throws ExecutionException this exception can occur while trying to retrieve the active window
-     */
-    private IProject getActiveProject(ExecutionEvent event) throws ExecutionException
-    {
-        IProject currentProject = null;
-
-        // check which window is focussed
-        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
-        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-
-        // get an adaptable in order to retrieve its project
-        IAdaptable adaptable = null;
-
-        if (isExplorerFocussed) {
-            // get selection
-            final IStructuredSelection selection =
-                (IStructuredSelection) window.getSelectionService().getSelection();
-
-            if (!selection.isEmpty())
-                adaptable = (IAdaptable) selection.getFirstElement();
-        }
-
-        // fallback: choose the project of the active editor
-        if (adaptable == null) {
-            // get active editor
-            final IEditorPart activeEditor = window.getActivePage().getActiveEditor();
-
-            if (activeEditor != null)
-                adaptable = activeEditor.getEditorInput();
-        }
-
-        if (adaptable != null) {
-            // retrieve current project from adaptable
-            currentProject = adaptable.getAdapter(IProject.class);
-
-            // fallback: get a resource from the adaptable and then its project
-            if (currentProject == null) {
-                final IResource resource = adaptable.getAdapter(IResource.class);
-
-                if (resource != null)
-                    currentProject = resource.getProject();
-            }
-        }
-
-        return currentProject;
-    }
-
-
-    /**
      * Returns a process builder for running a formatting process.
      * If the current project uses the HarvesterUtils astyle-format script,
      * this script is preferred over the plugin preferences.
@@ -211,7 +150,7 @@ public final class FormattingHandler extends AbstractHandler
      *
      * @return a formatting process builder
      */
-    private ProcessBuilder getFormattingProcess(IProject project)
+    private ProcessBuilder createFormattingProcess(IProject project)
     {
         // get source path from the project
         final String sourcePath = project
@@ -223,9 +162,9 @@ public final class FormattingHandler extends AbstractHandler
         final IFile formattingUtilScript = project.getFile(AStyleHandlerConstants.HARVESTER_FORMATTING_SCRIPT);
 
         if (formattingUtilScript.exists())
-            return getHarvesterFormattingProcess(formattingUtilScript);
+            return createHarvesterFormattingProcess(formattingUtilScript);
         else
-            return getDefaultFormattingProcess(sourcePath);
+            return createDefaultFormattingProcess(sourcePath);
     }
 
 
@@ -237,11 +176,10 @@ public final class FormattingHandler extends AbstractHandler
      *
      * @return a process builder for formatting the active project
      */
-    private ProcessBuilder getHarvesterFormattingProcess(IFile formattingScript)
+    private ProcessBuilder createHarvesterFormattingProcess(IFile formattingScript)
     {
         final String scriptFullPath = formattingScript.getLocation().toOSString();
         final String projectPath = scriptFullPath.substring(0, scriptFullPath.length() - formattingScript.getProjectRelativePath().toOSString().length());
-        System.out.println("USING HARVESTER SCRIPT");
 
         final ProcessBuilder pb = new ProcessBuilder(scriptFullPath);
         pb.directory(new File(projectPath));
@@ -258,9 +196,8 @@ public final class FormattingHandler extends AbstractHandler
      *
      * @return a process builder for formatting the active project
      */
-    private ProcessBuilder getDefaultFormattingProcess(String unescapedSourcePath)
+    private ProcessBuilder createDefaultFormattingProcess(String unescapedSourcePath)
     {
-        System.out.println("USING DEFAULT SCRIPT");
         final String sourcePath =
             unescapedSourcePath.replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
 
