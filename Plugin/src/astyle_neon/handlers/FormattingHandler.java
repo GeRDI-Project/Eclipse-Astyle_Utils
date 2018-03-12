@@ -17,6 +17,7 @@ package astyle_neon.handlers;
 
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +35,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import astyle_neon.preferences.AStylePreferenceConstants;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
@@ -77,43 +79,18 @@ public final class FormattingHandler extends AbstractHandler
      */
     private FeedbackMessage formatProject(IProject project)
     {
-        // get astyle binary path from preferences
-        final String binPath = AStylePreferenceConstants.STORE
-                               .getString(AStylePreferenceConstants.BINARY_PATH_OPTION)
-                               .replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
-
-        // get astyle options ini path from preferences
-        final String optionsPath = AStylePreferenceConstants.STORE
-                                   .getString(AStylePreferenceConstants.OPTIONS_FILE_PATH_OPTION)
-                                   .replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
+        final ProcessBuilder formattingBuilder = getFormattingProcess(project);
 
         // abort if any path is missing
-        if (binPath.isEmpty() || optionsPath.isEmpty())
+        if (formattingBuilder == null)
             return FeedbackMessage.CreateError(
                        String.format(AStyleHandlerConstants.ERROR_NO_PATH, project.getName()));
-
-        // get source path from the project
-        final String sourcePath = project
-                                  .getFolder(AStyleHandlerConstants.PROJECT_SOURCE_DIRECTORY)
-                                  .getLocation()
-                                  .toOSString()
-                                  .replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
-
-        // assemble formatting command
-        final ProcessBuilder pb = new ProcessBuilder(
-            String.format(AStyleHandlerConstants.ASTYLE_BIN_CMD, binPath),
-            AStyleHandlerConstants.RECURSIVE_CMD_PARAM,
-            AStyleHandlerConstants.NO_BACKUP_CMD_PARAM,
-            AStyleHandlerConstants.ONLY_FORMATTED_CMD_PARAM,
-            String.format(AStyleHandlerConstants.OPTIONS_CMD_PARAM, optionsPath),
-            String.format(AStyleHandlerConstants.TARGET_FOLDER_CMD, sourcePath)
-        );
 
         final String processOutput;
 
         try {
             // execute command
-            final Process formattingProcess = pb.start();
+            final Process formattingProcess = formattingBuilder.start();
             int returnCode = formattingProcess.waitFor();
 
             // read returned string
@@ -222,5 +199,92 @@ public final class FormattingHandler extends AbstractHandler
         }
 
         return currentProject;
+    }
+
+
+    /**
+     * Returns a process builder for running a formatting process.
+     * If the current project uses the HarvesterUtils astyle-format script,
+     * this script is preferred over the plugin preferences.
+     *
+     * @param project the active project
+     *
+     * @return a formatting process builder
+     */
+    private ProcessBuilder getFormattingProcess(IProject project)
+    {
+        // get source path from the project
+        final String sourcePath = project
+                                  .getFolder(AStyleHandlerConstants.PROJECT_SOURCE_DIRECTORY)
+                                  .getLocation()
+                                  .toOSString();
+
+        // if the project has a formatting util script, use that instead
+        final IFile formattingUtilScript = project.getFile(AStyleHandlerConstants.HARVESTER_FORMATTING_SCRIPT);
+
+        if (formattingUtilScript.exists())
+            return getHarvesterFormattingProcess(formattingUtilScript);
+        else
+            return getDefaultFormattingProcess(sourcePath);
+    }
+
+
+    /**
+     * Returns a process builder for running the scripts/formatting/astyle-format
+     * script.
+     *
+     * @param formattingScript the script that is to be executed
+     *
+     * @return a process builder for formatting the active project
+     */
+    private ProcessBuilder getHarvesterFormattingProcess(IFile formattingScript)
+    {
+        final String scriptFullPath = formattingScript.getLocation().toOSString();
+        final String projectPath = scriptFullPath.substring(0, scriptFullPath.length() - formattingScript.getProjectRelativePath().toOSString().length());
+        System.out.println("USING HARVESTER SCRIPT");
+
+        final ProcessBuilder pb = new ProcessBuilder(scriptFullPath);
+        pb.directory(new File(projectPath));
+
+        return pb;
+    }
+
+
+    /**
+     * Returns a process builder for running formatting the project using the
+     * formatter defined via the plugin preferences.
+     *
+     * @param unescapedSourcePath the source path of the active project without escaped whitespaces
+     *
+     * @return a process builder for formatting the active project
+     */
+    private ProcessBuilder getDefaultFormattingProcess(String unescapedSourcePath)
+    {
+        System.out.println("USING DEFAULT SCRIPT");
+        final String sourcePath =
+            unescapedSourcePath.replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
+
+        // get astyle binary path from preferences
+        final String binPath = AStylePreferenceConstants.STORE
+                               .getString(AStylePreferenceConstants.BINARY_PATH_OPTION)
+                               .replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
+
+        // get astyle options ini path from preferences
+        final String optionsPath = AStylePreferenceConstants.STORE
+                                   .getString(AStylePreferenceConstants.OPTIONS_FILE_PATH_OPTION)
+                                   .replaceAll(" ", AStyleHandlerConstants.WHITESPACE_ESCAPE);
+
+
+        if (!binPath.isEmpty() && !optionsPath.isEmpty())
+            return new ProcessBuilder(
+                       String.format(AStyleHandlerConstants.ASTYLE_BIN_CMD, binPath),
+                       AStyleHandlerConstants.RECURSIVE_CMD_PARAM,
+                       AStyleHandlerConstants.NO_BACKUP_CMD_PARAM,
+                       AStyleHandlerConstants.ONLY_FORMATTED_CMD_PARAM,
+                       String.format(AStyleHandlerConstants.OPTIONS_CMD_PARAM, optionsPath),
+                       String.format(AStyleHandlerConstants.TARGET_FOLDER_CMD, sourcePath)
+                   );
+        else
+            return null;
     }
 }

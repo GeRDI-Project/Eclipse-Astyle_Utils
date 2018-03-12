@@ -45,11 +45,26 @@ public class AStyleHandlerConstants
     public static final String NO_BACKUP_CMD_PARAM = "--suffix=none";
     public static final String ONLY_FORMATTED_CMD_PARAM = "--formatted";
 
+    public static final String HARVESTER_FORMATTING_SCRIPT = getHarvesterFormattingScriptLocation();
+
     /**
      * Private constructor, because this is just a collection of constants.
      */
     private AStyleHandlerConstants()
     {
 
+    }
+
+    /**
+     * Returns the location of a possible harvester formatting script.
+     *
+     * @return a batch script path if the OS is Windows based, else a shell script path
+     */
+    private static String getHarvesterFormattingScriptLocation()
+    {
+        if (System.getProperty("os.name").contains("Windows"))
+            return "/scripts/formatting/astyle-format.bat";
+        else
+            return "/scripts/formatting/astyle-format.sh";
     }
 }
