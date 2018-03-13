@@ -36,17 +36,8 @@ public final class FormatProjectHandler extends AbstractHandler
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        // get window and project
-        IProject currentProject = AStyleEclipseUtils.getActiveProject(event);
-
-        // format only if we found an active project
-        FeedbackMessage statusMessage;
-
-        if (currentProject != null) {
-            // format project and memorize the status message
-            statusMessage = formatProject(currentProject);
-        } else
-            statusMessage = FeedbackMessage.CreateError(AStyleHandlerConstants.ERROR_NO_PROJECT);
+        // format project and memorize the status message
+        final FeedbackMessage statusMessage = formatProject(event);
 
         // notify the user about the status
         statusMessage.display(event);
@@ -62,15 +53,20 @@ public final class FormatProjectHandler extends AbstractHandler
      *            the project of which the source files are formatted
      * @return a message describing the status of the formatting operation
      */
-    private FeedbackMessage formatProject(IProject project)
+    private FeedbackMessage formatProject(ExecutionEvent event)
     {
-        final String filePath = project
-                                .getFolder(AStyleHandlerConstants.PROJECT_SOURCE_DIRECTORY)
-                                .getLocation()
-                                .toOSString();
-        final String successPrefix = String.format(AStyleHandlerConstants.CAN_FORMAT_PROJECT, filePath);
-        final String errorPrefix = String.format(AStyleHandlerConstants.CANNOT_FORMAT_PROJECT, filePath);
+        final IProject project = AStyleEclipseUtils.getActiveProject(event);
 
-        return FormattingUtils.format(filePath, project, errorPrefix, successPrefix);
+        // the project is needed for retrieving the filepath. Abort if it could not be retrieved
+        if (project != null) {
+            final String filePath = project.getFolder(AStyleHandlerConstants.PROJECT_SOURCE_DIRECTORY)
+                                    .getLocation()
+                                    .toOSString();
+            final String successPrefix = String.format(AStyleHandlerConstants.CAN_FORMAT_PROJECT, filePath);
+            final String errorPrefix = String.format(AStyleHandlerConstants.CANNOT_FORMAT_PROJECT, filePath);
+
+            return FormattingUtils.format(filePath, project, errorPrefix, successPrefix);
+        } else
+            return FeedbackMessage.CreateError(AStyleHandlerConstants.ERROR_NO_PROJECT);
     }
 }

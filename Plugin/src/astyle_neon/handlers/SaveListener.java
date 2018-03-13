@@ -22,7 +22,6 @@ import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.commands.NotHandledException;
 
 import astyle_neon.AStyleEclipseUtils;
-import astyle_neon.preferences.AStylePreferenceConstants;
 
 /**
  * This listener reacts to save commands and triggers a formatting process.
@@ -34,9 +33,6 @@ public class SaveListener implements IExecutionListener
     @Override
     public void postExecuteSuccess(final String action, final Object arg1)
     {
-        if (!AStylePreferenceConstants.STORE.getBoolean(AStylePreferenceConstants.AUTO_FORMAT_OPTION))
-            return;
-
         switch (action) {
             case AStyleHandlerConstants.SAVE_COMMAND:
             case AStyleHandlerConstants.SAVE_AS_COMMAND:

@@ -38,10 +38,12 @@ public class AStyleHandlerConstants
 
     public static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
     public static final String ERROR_NO_PATH = "%s Please, specify the AStyle paths in the preferences.";
+    public static final String ERROR_NO_FILE = "Cannot format! No file or project could be retrieved from the current selection.";
     public static final String ERROR_GENERIC = "%s An error occurred during the formatting process.";
     public static final String ERROR_RETURN = "%s%n%n%s%n%n%s Return code: %d";
 
     public static final String PROJECT_SOURCE_DIRECTORY = "src";
+    public static final String JAVA_FILE_EXTENSION = ".java";
 
     public static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
 
@@ -57,6 +59,7 @@ public class AStyleHandlerConstants
     public static final String SAVE_ALL_COMMAND = "org.eclipse.ui.file.saveAll";
     public static final String FORMAT_PROJECT_COMMAND = "AStyle_Neon.commands.formatProjectCommand";
     public static final String FORMAT_FILE_COMMAND = "AStyle_Neon.commands.formatFileCommand";
+    public static final String ECLIPSE_FORMAT_JAVA_COMMAND = "org.eclipse.jdt.ui.edit.text.java.format";
 
 
     /**

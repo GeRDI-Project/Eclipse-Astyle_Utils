@@ -58,6 +58,14 @@ public class FormattingUtils
     {
         final ProcessBuilder formattingBuilder = FormattingUtils.createFormattingProcess(filePath);
 
+        // abort if project is missing
+        if (project == null)
+            return FeedbackMessage.CreateError(AStyleHandlerConstants.ERROR_NO_PROJECT);
+
+        // abort if file to be formatted is missing
+        if (filePath == null)
+            return FeedbackMessage.CreateError(AStyleHandlerConstants.ERROR_NO_FILE);
+
         // abort if any path is missing
         if (formattingBuilder == null)
             return FeedbackMessage.CreateError(

@@ -56,15 +56,9 @@ public class AStyleEclipseUtils
      */
     public static IActionBars getActionBars(ExecutionEvent event)
     {
-        IEditorPart editor;
-
-        try {
-            editor = HandlerUtil.getActiveWorkbenchWindowChecked(event)
-                     .getActivePage()
-                     .getActiveEditor();
-        } catch (ExecutionException e) {
-            editor = null;
-        }
+        final IEditorPart editor = getActiveWorkbenchWindow(event)
+                                   .getActivePage()
+                                   .getActiveEditor();
 
         // check if there is an active editor
         if (editor != null)
@@ -85,11 +79,7 @@ public class AStyleEclipseUtils
      */
     public static boolean executeCommand(String commandName)
     {
-        final IHandlerService handlerService =
-            PlatformUI
-            .getWorkbench()
-            .getActiveWorkbenchWindow()
-            .getService(IHandlerService.class);
+        final IHandlerService handlerService = getActiveWorkbenchWindow(null).getService(IHandlerService.class);
 
         if (handlerService != null) {
             try {
@@ -109,65 +99,29 @@ public class AStyleEclipseUtils
      * If the Editor is focussed, retrieves the path of the edited file.
      *
      * @return the file path, or null if there is no active editor and nothing selected in the project explorer
-     * @throws ExecutionException 
      */
-    public static String getFilePathOfSelectedFile( ExecutionEvent event)
+    public static String getFilePathOfSelectedFile(ExecutionEvent event)
     {
-        // TODO Get File from Project Explorer
-
         // check which window is focussed
         boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
-        IWorkbenchWindow window;
-        try {
-            window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        } catch (ExecutionException e) {
-            return null;
-        }
+        IWorkbenchWindow window = getActiveWorkbenchWindow(event);
 
-        // get an adaptable in order to retrieve its project
-        IAdaptable adaptable = null;
-
+        // try to get the file that is focussed in the Explorer
         if (isExplorerFocussed) {
             // get selection
             final IStructuredSelection selection =
                 (IStructuredSelection) window.getSelectionService().getSelection();
 
-            if (!selection.isEmpty())
-                adaptable = (IAdaptable) selection.getFirstElement();
-            
-            if (adaptable != null)
-                return adaptable.getAdapter(IResource.class)
-                .getLocation()
-                .toOSString();
-        }
-/*
-        // fallback: choose the project of the active editor
-        if (adaptable == null) {
-            // get active editor
-            final IEditorPart activeEditor = window.getActivePage().getActiveEditor();
+            if (!selection.isEmpty()) {
+                IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
 
-            if (activeEditor != null)
-                adaptable = activeEditor.getEditorInput();
-        }
-
-        if (adaptable != null) {
-            // retrieve current project from adaptable
-            currentProject = adaptable.getAdapter(IProject.class);
-
-            // fallback: get a resource from the adaptable and then its project
-            if (currentProject == null) {
-                final IResource resource = adaptable.getAdapter(IResource.class);
-
-                if (resource != null)
-                    currentProject = resource.getProject();
+                if (adaptable != null)
+                    return adaptable.getAdapter(IResource.class)
+                           .getLocation()
+                           .toOSString();
             }
         }
 
-        return currentProject;*/
-
-        
-        
-        
         final IEditorPart activeEditor =
             window.getActivePage().getActiveEditor();
 
@@ -187,17 +141,15 @@ public class AStyleEclipseUtils
      *
      * @param event
      *            the event that triggered the command
-     * @return a project that is associated with a currently selected file or
-     *         editor view
-     * @throws ExecutionException this exception can occur while trying to retrieve the active window
+     * @return a project that is associated with a currently selected file, or null if the project could not be retrieved
      */
-    public static IProject getActiveProject(ExecutionEvent event) throws ExecutionException
+    public static IProject getActiveProject(ExecutionEvent event)
     {
         IProject currentProject = null;
 
         // check which window is focussed
         boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
-        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        final IWorkbenchWindow window = getActiveWorkbenchWindow(event);
 
         // get an adaptable in order to retrieve its project
         IAdaptable adaptable = null;
@@ -234,5 +186,26 @@ public class AStyleEclipseUtils
         }
 
         return currentProject;
+    }
+
+
+    /**
+     * Returns the active workbench window.
+     *
+     * @param event the event for which this window is required, or null if no event was fired
+     *
+     * @return the active workbench window
+     */
+    public static IWorkbenchWindow getActiveWorkbenchWindow(ExecutionEvent event)
+    {
+        if (event != null) {
+            try {
+                return HandlerUtil.getActiveWorkbenchWindowChecked(event);
+            } catch (ExecutionException ex) {
+                // do nothing, this case will be handled below
+            }
+        }
+
+        return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
     }
 }

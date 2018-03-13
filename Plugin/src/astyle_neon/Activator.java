@@ -16,11 +16,10 @@
 package astyle_neon;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import astyle_neon.handlers.SaveListener;
+import astyle_neon.handlers.AutoFormatChangedListener;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -48,8 +47,7 @@ public class Activator extends AbstractUIPlugin
         super.start(context);
         plugin = this;
 
-        final ICommandService service = (ICommandService) plugin.getWorkbench().getService(ICommandService.class);
-        service.addExecutionListener(new SaveListener());
+        plugin.getPreferenceStore().addPropertyChangeListener(new AutoFormatChangedListener());
     }
 
 

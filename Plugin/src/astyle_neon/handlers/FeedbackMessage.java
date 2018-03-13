@@ -17,11 +17,8 @@
 package astyle_neon.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
-
 import astyle_neon.AStyleEclipseUtils;
 import astyle_neon.preferences.AStylePreferenceConstants;
 import astyle_neon.preferences.FeedbackStyle;
@@ -37,12 +34,24 @@ public class FeedbackMessage
     private final FeedbackStyle displayStyle;
 
 
+    /**
+     * Creates an error message.
+     * @param message the message text
+     *
+     * @return a TextBox FeedbackMessage
+     */
     public static FeedbackMessage CreateError(String message)
     {
         return new FeedbackMessage(message, true);
     }
 
 
+    /**
+     * Creates a regular feedback message.
+     * @param message the message text
+     *
+     * @return a FeedbackMessage
+     */
     public static FeedbackMessage CreateInfo(String message)
     {
         return new FeedbackMessage(message, false);
@@ -74,11 +83,12 @@ public class FeedbackMessage
      * @param event the event that triggered the message
      * @param message the message that is to be printed
      */
-    public void display(ExecutionEvent event) throws ExecutionException
+    public void display(ExecutionEvent event)
     {
         switch (displayStyle) {
             case TextBox:
-                final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+                final IWorkbenchWindow window = AStyleEclipseUtils.getActiveWorkbenchWindow(event);
+
                 MessageDialog.openInformation(window.getShell(), AStyleHandlerConstants.ASTYLE_NAME, message);
                 break;
 

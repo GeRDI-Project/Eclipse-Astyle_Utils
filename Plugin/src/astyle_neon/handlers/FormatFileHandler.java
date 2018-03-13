@@ -18,7 +18,6 @@ package astyle_neon.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import astyle_neon.AStyleEclipseUtils;
 import org.eclipse.core.resources.IProject;
 
@@ -32,19 +31,10 @@ import org.eclipse.core.resources.IProject;
 public final class FormatFileHandler extends AbstractHandler
 {
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(ExecutionEvent event)
     {
-        // get project
-        IProject currentProject = AStyleEclipseUtils.getActiveProject(event);
-
-        // format only if we found an active project
-        FeedbackMessage statusMessage;
-
-        if (currentProject != null) {
-            // format project and memorize the status message
-            statusMessage = formatFile(currentProject, event);
-        } else
-            statusMessage = FeedbackMessage.CreateError(AStyleHandlerConstants.ERROR_NO_PROJECT);
+        // format file and memorize the status message
+        final FeedbackMessage statusMessage = formatFile(event);
 
         // notify the user about the status
         statusMessage.display(event);
@@ -56,17 +46,22 @@ public final class FormatFileHandler extends AbstractHandler
     /**
      * Formats a the currently active file.
      *
-     * @param project the project to which the file belongs
      * @param event the event that triggered the formatting
      *
      * @return a feedback message of the formatting process
      */
-    public FeedbackMessage formatFile(IProject project, ExecutionEvent event)
+    public FeedbackMessage formatFile(ExecutionEvent event)
     {
+        final IProject project = AStyleEclipseUtils.getActiveProject(event);
         final String filePath = AStyleEclipseUtils.getFilePathOfSelectedFile(event);
         final String successPrefix = String.format(AStyleHandlerConstants.CAN_FORMAT_FILE, filePath);
         final String errorPrefix = String.format(AStyleHandlerConstants.CANNOT_FORMAT_FILE, filePath);
 
+        // execute Eclipse Java formatting
+        if (filePath.endsWith(AStyleHandlerConstants.JAVA_FILE_EXTENSION))
+            AStyleEclipseUtils.executeCommand(AStyleHandlerConstants.ECLIPSE_FORMAT_JAVA_COMMAND);
+
+        // execute AStyle formatting
         return FormattingUtils.format(filePath, project, errorPrefix, successPrefix);
     }
 

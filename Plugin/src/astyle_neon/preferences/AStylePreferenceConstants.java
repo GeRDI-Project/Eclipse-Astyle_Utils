@@ -40,7 +40,7 @@ public class AStylePreferenceConstants
     public final static String BINARY_PATH_LABEL = "AStyle &bin directory:";
 
     public final static String AUTO_FORMAT_OPTION = "AUTO_FORMAT";
-    public final static String AUTO_FORMAT_LABEL = "&Format on save:";
+    public final static String AUTO_FORMAT_LABEL = "&Format on save";
 
     public final static String FEEDBACK_STYLE_OPTION = "FEEDBACK_STYLE";
     public final static String FEEDBACK_STYLE_LABEL = "&Formatting Feedback:";
