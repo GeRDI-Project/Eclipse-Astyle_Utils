@@ -14,7 +14,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.handlers;
+package astyle_neon;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -29,6 +29,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.handlers.IHandlerService;
+
+import astyle_neon.handlers.AStyleHandlerConstants;
 
 /**
  * This helper class offers static methods for retrieving Eclipse UI elements.
@@ -74,25 +77,78 @@ public class AStyleEclipseUtils
 
 
     /**
-     * Attempts to retrieve the project that belongs to the active editor.
+     * Attempts to execute an Eclipse command.
      *
-     * @return the project of the active editor, or null if there is no active editor
+     * @param commandName the name of the command
+     *
+     * @return true if the command could be executed
      */
-    public static IProject getActiveProject()
+    public static boolean executeCommand(String commandName)
     {
-        IProject currentProject = null;
+        final IHandlerService handlerService =
+            PlatformUI
+            .getWorkbench()
+            .getActiveWorkbenchWindow()
+            .getService(IHandlerService.class);
 
-        // get active editor
-        final IEditorPart activeEditor = PlatformUI.getWorkbench()
-                                         .getActiveWorkbenchWindow()
-                                         .getActivePage()
-                                         .getActiveEditor();
+        if (handlerService != null) {
+            try {
+                handlerService.executeCommand(commandName, null);
+                return true;
+            } catch (Exception ex) {
+                // do nothing
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Retrieves the file path of the file that is selected in the Project Explorer.
+     * If the Editor is focussed, retrieves the path of the edited file.
+     *
+     * @return the file path, or null if there is no active editor and nothing selected in the project explorer
+     * @throws ExecutionException 
+     */
+    public static String getFilePathOfSelectedFile( ExecutionEvent event)
+    {
+        // TODO Get File from Project Explorer
+
+        // check which window is focussed
+        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
+        IWorkbenchWindow window;
+        try {
+            window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        } catch (ExecutionException e) {
+            return null;
+        }
 
         // get an adaptable in order to retrieve its project
         IAdaptable adaptable = null;
 
-        if (activeEditor != null)
-            adaptable = activeEditor.getEditorInput();
+        if (isExplorerFocussed) {
+            // get selection
+            final IStructuredSelection selection =
+                (IStructuredSelection) window.getSelectionService().getSelection();
+
+            if (!selection.isEmpty())
+                adaptable = (IAdaptable) selection.getFirstElement();
+            
+            if (adaptable != null)
+                return adaptable.getAdapter(IResource.class)
+                .getLocation()
+                .toOSString();
+        }
+/*
+        // fallback: choose the project of the active editor
+        if (adaptable == null) {
+            // get active editor
+            final IEditorPart activeEditor = window.getActivePage().getActiveEditor();
+
+            if (activeEditor != null)
+                adaptable = activeEditor.getEditorInput();
+        }
 
         if (adaptable != null) {
             // retrieve current project from adaptable
@@ -107,7 +163,22 @@ public class AStyleEclipseUtils
             }
         }
 
-        return currentProject;
+        return currentProject;*/
+
+        
+        
+        
+        final IEditorPart activeEditor =
+            window.getActivePage().getActiveEditor();
+
+        if (activeEditor != null)
+            return activeEditor
+                   .getEditorInput()
+                   .getAdapter(IResource.class)
+                   .getLocation()
+                   .toOSString();
+        else
+            return null;
     }
 
 

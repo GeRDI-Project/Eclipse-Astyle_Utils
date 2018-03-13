@@ -18,6 +18,7 @@ package astyle_neon.handlers;
 
 import java.io.File;
 
+
 /**
  * This class offers constants that are used by the {@linkplain FormattingHandler}.
  *
@@ -29,15 +30,19 @@ public class AStyleHandlerConstants
 
     public static final String ASTYLE_NAME = "AStyle";
     public static final String EXPLORER_SUFFIX = "Explorer";
+
+    public static final String CANNOT_FORMAT_FILE = "Cannot format File '%s'!";
+    public static final String CANNOT_FORMAT_PROJECT = "Cannot format Project '%s'!";
+    public static final String CAN_FORMAT_FILE = "%%s%%n%%nFormatted File '%s'!";
+    public static final String CAN_FORMAT_PROJECT = "%%s%%n%%nFormatted all files in Project '%s'!";
+
     public static final String ERROR_NO_PROJECT = "You need to select a project from the Project Explorer, or open a file that belongs to a project before formatting!";
-    public static final String ERROR_NO_PATH = "Could not format Project '%s':%nPlease, specify the AStyle paths in the preferences.";
-    public static final String ERROR_GENERIC = "Could not format Project '%s':%nAn error occurred during the formatting process.";
-    public static final String ERROR_RETURN = "%s%n%n%s%n%nCould not format Project '%s':%nReturn code: %d";
-    public static final String SUCCESS = "%s%n%nFormatted all files in Project '%s'!";
-    public static final String SUCCESS_REFRESH = SUCCESS + "\nYou need to refresh your Project!";
+    public static final String ERROR_NO_PATH = "%s Please, specify the AStyle paths in the preferences.";
+    public static final String ERROR_GENERIC = "%s An error occurred during the formatting process.";
+    public static final String ERROR_RETURN = "%s%n%n%s%n%n%s Return code: %d";
+
     public static final String PROJECT_SOURCE_DIRECTORY = "src";
 
-    public static final String TARGET_FOLDER_CMD = "%s" + File.separatorChar + "\\*";
     public static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
 
     public static final String OPTIONS_CMD_PARAM = "--options=%s";
@@ -47,6 +52,13 @@ public class AStyleHandlerConstants
 
     public static final String HARVESTER_FORMATTING_SCRIPT = getHarvesterFormattingScriptLocation();
 
+    public static final String SAVE_COMMAND = "org.eclipse.ui.file.save";
+    public static final String SAVE_AS_COMMAND = "org.eclipse.ui.file.saveAs";
+    public static final String SAVE_ALL_COMMAND = "org.eclipse.ui.file.saveAll";
+    public static final String FORMAT_PROJECT_COMMAND = "AStyle_Neon.commands.formatProjectCommand";
+    public static final String FORMAT_FILE_COMMAND = "AStyle_Neon.commands.formatFileCommand";
+
+
     /**
      * Private constructor, because this is just a collection of constants.
      */
@@ -54,6 +66,7 @@ public class AStyleHandlerConstants
     {
 
     }
+
 
     /**
      * Returns the location of a possible harvester formatting script.

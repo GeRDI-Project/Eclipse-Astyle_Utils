@@ -19,12 +19,10 @@ package astyle_neon.handlers;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import astyle_neon.AStyleEclipseUtils;
 import astyle_neon.preferences.AStylePreferenceConstants;
 import astyle_neon.preferences.FeedbackStyle;
 
