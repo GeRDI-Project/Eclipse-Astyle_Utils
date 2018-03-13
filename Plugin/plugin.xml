@@ -2,8 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <!-- Format File - Command Definition -->
-   <extension
-         point="org.eclipse.ui.commands">
+   <extension point="org.eclipse.ui.commands">
       <category
             name="AStyle"
             id="AStyle_Neon.commands.category">
@@ -16,8 +15,7 @@
    </extension>
    
    <!-- Format File - Handler Assignment -->
-   <extension
-         point="org.eclipse.ui.handlers">
+   <extension point="org.eclipse.ui.handlers">
       <handler
             commandId="AStyle_Neon.commands.formatFileCommand"
             class="astyle_neon.handlers.FormatFileHandler">
@@ -25,8 +23,7 @@
    </extension>
    
    <!-- Format File - Key Binding -->
-   <extension
-         point="org.eclipse.ui.bindings">
+   <extension point="org.eclipse.ui.bindings">
       <key
             commandId="AStyle_Neon.commands.formatFileCommand"
             contextId="org.eclipse.ui.contexts.window"
@@ -36,8 +33,7 @@
    </extension>
    
    <!-- Format File - Add to Explorer Menu -->
-   <extension
-         point="org.eclipse.ui.menus">
+   <extension point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
         <command
@@ -89,8 +85,7 @@
 
 
    <!-- Format Project - Command Definition -->
-   <extension
-         point="org.eclipse.ui.commands">
+   <extension point="org.eclipse.ui.commands">
       <category
             name="AStyle"
             id="AStyle_Neon.commands.category">
@@ -103,8 +98,7 @@
    </extension>
    
    <!-- Format Project - Handler Assignment -->
-   <extension
-         point="org.eclipse.ui.handlers">
+   <extension point="org.eclipse.ui.handlers">
       <handler
             commandId="AStyle_Neon.commands.formatProjectCommand"
             class="astyle_neon.handlers.FormatProjectHandler">
@@ -112,8 +106,7 @@
    </extension>
    
    <!-- Format Project - Key Binding -->
-   <extension
-         point="org.eclipse.ui.bindings">
+   <extension point="org.eclipse.ui.bindings">
       <key
             commandId="AStyle_Neon.commands.formatProjectCommand"
             contextId="org.eclipse.ui.contexts.window"
@@ -123,12 +116,16 @@
    </extension>
    
    <!-- Preferences Page -->
-   <extension
-      point = "org.eclipse.ui.preferencePages">
+   <extension point = "org.eclipse.ui.preferencePages">
        <page id="org.eclipse.ui.examples.readmetool.Page1"
 	    class="astyle_neon.preferences.AStylePreferencePage"
             name="AStyle">
        </page>
    </extension>
+   
+   <!-- Start Plugin early to allow Auto-Formatting -->
+    <extension point="org.eclipse.ui.startup">
+    	<startup class="astyle_neon.Activator"/>
+   	</extension>
 
 </plugin>

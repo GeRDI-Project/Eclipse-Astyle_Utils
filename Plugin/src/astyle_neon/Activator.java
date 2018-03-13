@@ -16,15 +16,18 @@
 package astyle_neon;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import astyle_neon.handlers.AutoFormatChangedListener;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
+ * It is initialized early in order to fix a bug that causes the Auto-Format
+ * option to not work if no formatting was triggered manually before within the same session.
  */
-public class Activator extends AbstractUIPlugin
+public class Activator extends AbstractUIPlugin implements IStartup
 {
     // The plug-in ID
     public static final String PLUGIN_ID = "AStyle_Neon"; //$NON-NLS-1$
@@ -38,6 +41,14 @@ public class Activator extends AbstractUIPlugin
      */
     public Activator()
     {
+    }
+
+
+    @Override
+    public void earlyStartup()
+    {
+        // nothing to do here
+        // at this point, the Activator was already initialized
     }
 
 
