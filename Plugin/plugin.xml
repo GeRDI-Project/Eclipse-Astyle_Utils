@@ -9,7 +9,7 @@
             id="AStyle_Neon.commands.category">
       </category>
       <command
-            name="Format File"
+            name="AStyle Format"
             categoryId="AStyle_Neon.commands.category"
             id="AStyle_Neon.commands.formatFileCommand">
       </command>
@@ -46,8 +46,15 @@
               id="AStyle_Neon.menus.formatFileCommand">
           <visibleWhen>
               	<with variable="activeMenuSelection">
+        			<count value="1"/>
 					<iterate ifEmpty="false">
-						<adapt type="org.eclipse.core.resources.IResource"/>
+						<or>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<test property="org.eclipse.core.resources.name" value="*.java"/>
+							</adapt>
+							<adapt type="org.eclipse.core.resources.IContainer"/>
+							<adapt type="org.eclipse.jdt.internal.core.PackageFragment"/>
+						</or>
 					</iterate>
 				</with>
           </visibleWhen>
@@ -62,8 +69,15 @@
               id="AStyle_Neon.menus.formatFileCommand">
               <visibleWhen>
 	              	<with variable="activeMenuSelection">
+        				<count value="1"/>
 						<iterate ifEmpty="false">
-								<adapt type="org.eclipse.core.resources.IResource"/>
+							<or>
+								<adapt type="org.eclipse.core.resources.IResource">
+									<test property="org.eclipse.core.resources.name" value="*.java"/>
+								</adapt>
+								<adapt type="org.eclipse.core.resources.IContainer"/>
+								<adapt type="org.eclipse.jdt.internal.core.PackageFragment"/>
+							</or>
 						</iterate>
 					</with>
 	          </visibleWhen>
@@ -82,7 +96,7 @@
             id="AStyle_Neon.commands.category">
       </category>
       <command
-            name="Format Project"
+            name="AStyle Format Project"
             categoryId="AStyle_Neon.commands.category"
             id="AStyle_Neon.commands.formatProjectCommand">
       </command>
@@ -106,42 +120,6 @@
             sequence="M1+6"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
-   </extension>
-   
-   <!-- Format Project - Add to Explorer Menu -->
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-        <command
-              commandId="AStyle_Neon.commands.formatProjectCommand"
-              mnemonic="S"
-              id="AStyle_Neon.menus.formatProjectCommand">
-          <visibleWhen>
-              	<with variable="activeMenuSelection">
-					<iterate ifEmpty="false">
-						<adapt type="org.eclipse.core.resources.IProject"/>
-					</iterate>
-				</with>
-          </visibleWhen>
-        </command>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
-        <command
-              commandId="AStyle_Neon.commands.formatProjectCommand"
-              mnemonic="S"
-              style="push"
-              id="AStyle_Neon.menus.formatProjectCommand">
-              <visibleWhen>
-	              	<with variable="activeMenuSelection">
-						<iterate ifEmpty="false">
-								<adapt type="org.eclipse.core.resources.IProject"/>
-						</iterate>
-					</with>
-	          </visibleWhen>
-        </command>
-      </menuContribution>
    </extension>
    
    <!-- Preferences Page -->

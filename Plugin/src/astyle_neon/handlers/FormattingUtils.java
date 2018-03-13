@@ -213,7 +213,7 @@ public class FormattingUtils
                        AStyleHandlerConstants.NO_BACKUP_CMD_PARAM,
                        AStyleHandlerConstants.ONLY_FORMATTED_CMD_PARAM,
                        String.format(AStyleHandlerConstants.OPTIONS_CMD_PARAM, optionsPath),
-                       filePath
+                       filePath + AStyleHandlerConstants.JAVA_FILE_EXTENSION
                    );
         else
             return new ProcessBuilder(
