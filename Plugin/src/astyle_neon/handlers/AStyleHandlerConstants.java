@@ -44,6 +44,8 @@ public class AStyleHandlerConstants
 
     public static final String PROJECT_SOURCE_DIRECTORY = "src";
     public static final String JAVA_FILE_EXTENSION = ".java";
+    public static final String JAVA_FILE_PATH_QUOTED = "\"%s.java\"";
+    public static final String FILE_PATH_QUOTED = "\"%s\"";
 
     public static final String ASTYLE_BIN_CMD = "%s" + File.separatorChar + "astyle";
 

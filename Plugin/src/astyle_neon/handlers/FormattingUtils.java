@@ -171,8 +171,11 @@ public class FormattingUtils
     {
         final String scriptFullPath = formattingScript.getAbsolutePath();
 
-        final ProcessBuilder pb = new ProcessBuilder(scriptFullPath);
-        pb.directory(formattingScript.getParentFile().getParentFile());
+        final ProcessBuilder pb = new ProcessBuilder(
+                scriptFullPath,
+                String.format(AStyleHandlerConstants.FILE_PATH_QUOTED, filePath)
+        );
+        pb.directory(formattingScript.getParentFile().getParentFile().getParentFile());
 
         return pb;
     }
@@ -213,7 +216,7 @@ public class FormattingUtils
                        AStyleHandlerConstants.NO_BACKUP_CMD_PARAM,
                        AStyleHandlerConstants.ONLY_FORMATTED_CMD_PARAM,
                        String.format(AStyleHandlerConstants.OPTIONS_CMD_PARAM, optionsPath),
-                       filePath + AStyleHandlerConstants.JAVA_FILE_EXTENSION
+                       String.format(AStyleHandlerConstants.JAVA_FILE_PATH_QUOTED, filePath)
                    );
         else
             return new ProcessBuilder(
@@ -221,7 +224,7 @@ public class FormattingUtils
                        AStyleHandlerConstants.NO_BACKUP_CMD_PARAM,
                        AStyleHandlerConstants.ONLY_FORMATTED_CMD_PARAM,
                        String.format(AStyleHandlerConstants.OPTIONS_CMD_PARAM, optionsPath),
-                       filePath
+                       String.format(AStyleHandlerConstants.FILE_PATH_QUOTED, filePath)
                    );
     }
 }
