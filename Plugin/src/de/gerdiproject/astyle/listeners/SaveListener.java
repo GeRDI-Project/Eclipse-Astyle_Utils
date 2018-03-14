@@ -14,14 +14,15 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.handlers;
+package de.gerdiproject.astyle.listeners;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.commands.NotHandledException;
 
-import astyle_neon.AStyleEclipseUtils;
+import de.gerdiproject.astyle.handlers.AStyleHandlerConstants;
+import de.gerdiproject.astyle.utils.AStyleEclipseUtils;
 
 /**
  * This listener reacts to save commands and triggers a formatting process.

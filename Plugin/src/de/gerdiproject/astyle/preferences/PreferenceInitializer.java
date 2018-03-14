@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package astyle_neon.preferences;
+package de.gerdiproject.astyle.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import astyle_neon.Activator;
+import de.gerdiproject.astyle.Activator;
 
 /**
  * This initializer initializes the AStyle preferences with default values.

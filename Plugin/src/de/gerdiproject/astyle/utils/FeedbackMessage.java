@@ -14,14 +14,15 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.handlers;
+package de.gerdiproject.astyle.utils;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;
-import astyle_neon.AStyleEclipseUtils;
-import astyle_neon.preferences.AStylePreferenceConstants;
-import astyle_neon.preferences.FeedbackStyle;
+
+import de.gerdiproject.astyle.handlers.AStyleHandlerConstants;
+import de.gerdiproject.astyle.preferences.AStylePreferenceConstants;
+import de.gerdiproject.astyle.preferences.FeedbackStyle;
 
 /**
  * This class represents a feedback message of AStyle formatting.

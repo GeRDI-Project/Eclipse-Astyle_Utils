@@ -14,37 +14,10 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.preferences;
-
 /**
- * This enum signifies how formatting feedback messages are shown to the user.
+ * This is the main package for the AStyle Eclipse plugin that includes all packages and
+ * classes that are related to the plugin itself.
  *
  * @author Robin Weiss
  */
-public enum FeedbackStyle {
-    /**
-     * No feedback message is shown.
-     */
-    Disabled,
-
-    /**
-     * The feedback message is displayed in the status bar.
-     */
-    StatusBar,
-
-    /**
-     * A text box pops up, displaying the feedback message.
-     */
-    TextBox;
-
-
-    /**
-     * Returns the textual representation of the option as it appears in the UI.
-     *
-     * @return the textual representation of the option
-     */
-    public String getDisplayName()
-    {
-        return "&" + this.toString();
-    }
-}
+package de.gerdiproject.astyle;

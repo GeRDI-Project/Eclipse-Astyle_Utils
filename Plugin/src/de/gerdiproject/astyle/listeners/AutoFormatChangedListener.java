@@ -14,14 +14,14 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.handlers;
+package de.gerdiproject.astyle.listeners;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.commands.ICommandService;
 
-import astyle_neon.Activator;
-import astyle_neon.preferences.AStylePreferenceConstants;
+import de.gerdiproject.astyle.Activator;
+import de.gerdiproject.astyle.preferences.AStylePreferenceConstants;
 
 /**
  * This listener listens to preference changes and toggles the Autoformatting behavior accordingly.

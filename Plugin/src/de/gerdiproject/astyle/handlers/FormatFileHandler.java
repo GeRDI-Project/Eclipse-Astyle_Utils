@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package astyle_neon.handlers;
+package de.gerdiproject.astyle.handlers;
 
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import astyle_neon.AStyleEclipseUtils;
 import org.eclipse.core.resources.IProject;
+
+import de.gerdiproject.astyle.utils.AStyleEclipseUtils;
+import de.gerdiproject.astyle.utils.FeedbackMessage;
+import de.gerdiproject.astyle.utils.FormattingUtils;
 
 /**
  * The handler for the AStyle_Neon.commands.formatFileCommand.

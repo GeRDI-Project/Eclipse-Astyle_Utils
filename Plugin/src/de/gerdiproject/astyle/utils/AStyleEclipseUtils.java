@@ -14,7 +14,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon;
+package de.gerdiproject.astyle.utils;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -31,7 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerService;
 
-import astyle_neon.handlers.AStyleHandlerConstants;
+import de.gerdiproject.astyle.handlers.AStyleHandlerConstants;
 
 /**
  * This helper class offers static methods for retrieving Eclipse UI elements.

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package astyle_neon;
+package de.gerdiproject.astyle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import astyle_neon.handlers.AutoFormatChangedListener;
+import de.gerdiproject.astyle.listeners.AutoFormatChangedListener;
 
 /**
  * The activator class controls the plug-in life cycle.

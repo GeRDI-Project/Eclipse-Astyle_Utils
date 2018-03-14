@@ -5,27 +5,27 @@
    <extension point="org.eclipse.ui.commands">
       <category
             name="AStyle"
-            id="AStyle_Neon.commands.category">
+            id="AStyle.commands.category">
       </category>
       <command
             name="AStyle Format"
-            categoryId="AStyle_Neon.commands.category"
-            id="AStyle_Neon.commands.formatFileCommand">
+            categoryId="AStyle.commands.category"
+            id="AStyle.commands.formatFileCommand">
       </command>
    </extension>
    
    <!-- Format File - Handler Assignment -->
    <extension point="org.eclipse.ui.handlers">
       <handler
-            commandId="AStyle_Neon.commands.formatFileCommand"
-            class="astyle_neon.handlers.FormatFileHandler">
+            commandId="AStyle.commands.formatFileCommand"
+            class="de.gerdiproject.astyle.handlers.FormatFileHandler">
       </handler>
    </extension>
    
    <!-- Format File - Key Binding -->
    <extension point="org.eclipse.ui.bindings">
       <key
-            commandId="AStyle_Neon.commands.formatFileCommand"
+            commandId="AStyle.commands.formatFileCommand"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M1+5"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
@@ -37,9 +37,9 @@
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
         <command
-              commandId="AStyle_Neon.commands.formatFileCommand"
+              commandId="AStyle.commands.formatFileCommand"
               mnemonic="S"
-              id="AStyle_Neon.menus.formatFileCommand">
+              id="AStyle.menus.formatFileCommand">
           <visibleWhen>
               	<with variable="activeMenuSelection">
         			<count value="1"/>
@@ -59,10 +59,10 @@
       <menuContribution
             locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
         <command
-              commandId="AStyle_Neon.commands.formatFileCommand"
+              commandId="AStyle.commands.formatFileCommand"
               mnemonic="S"
               style="push"
-              id="AStyle_Neon.menus.formatFileCommand">
+              id="AStyle.menus.formatFileCommand">
               <visibleWhen>
 	              	<with variable="activeMenuSelection">
         				<count value="1"/>
@@ -88,27 +88,27 @@
    <extension point="org.eclipse.ui.commands">
       <category
             name="AStyle"
-            id="AStyle_Neon.commands.category">
+            id="AStyle.commands.category">
       </category>
       <command
             name="AStyle Format Project"
-            categoryId="AStyle_Neon.commands.category"
-            id="AStyle_Neon.commands.formatProjectCommand">
+            categoryId="AStyle.commands.category"
+            id="AStyle.commands.formatProjectCommand">
       </command>
    </extension>
    
    <!-- Format Project - Handler Assignment -->
    <extension point="org.eclipse.ui.handlers">
       <handler
-            commandId="AStyle_Neon.commands.formatProjectCommand"
-            class="astyle_neon.handlers.FormatProjectHandler">
+            commandId="AStyle.commands.formatProjectCommand"
+            class="de.gerdiproject.astyle.handlers.FormatProjectHandler">
       </handler>
    </extension>
    
    <!-- Format Project - Key Binding -->
    <extension point="org.eclipse.ui.bindings">
       <key
-            commandId="AStyle_Neon.commands.formatProjectCommand"
+            commandId="AStyle.commands.formatProjectCommand"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M1+6"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
@@ -118,14 +118,14 @@
    <!-- Preferences Page -->
    <extension point = "org.eclipse.ui.preferencePages">
        <page id="org.eclipse.ui.examples.readmetool.Page1"
-	    class="astyle_neon.preferences.AStylePreferencePage"
+	    class="de.gerdiproject.astyle.preferences.AStylePreferencePage"
             name="AStyle">
        </page>
    </extension>
    
    <!-- Start Plugin early to allow Auto-Formatting -->
     <extension point="org.eclipse.ui.startup">
-    	<startup class="astyle_neon.Activator"/>
+    	<startup class="de.gerdiproject.astyle.Activator"/>
    	</extension>
 
 </plugin>

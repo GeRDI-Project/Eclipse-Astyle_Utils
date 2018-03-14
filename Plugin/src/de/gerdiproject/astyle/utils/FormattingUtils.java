@@ -14,7 +14,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.handlers;
+package de.gerdiproject.astyle.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +27,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import astyle_neon.preferences.AStylePreferenceConstants;
+import de.gerdiproject.astyle.handlers.AStyleHandlerConstants;
+import de.gerdiproject.astyle.preferences.AStylePreferenceConstants;
 
 /**
  * This helper class offers static formatting related methods.
@@ -172,8 +173,8 @@ public class FormattingUtils
         final String scriptFullPath = formattingScript.getAbsolutePath();
 
         final ProcessBuilder pb = new ProcessBuilder(
-                scriptFullPath,
-                String.format(AStyleHandlerConstants.FILE_PATH_QUOTED, filePath)
+            scriptFullPath,
+            String.format(AStyleHandlerConstants.FILE_PATH_QUOTED, filePath)
         );
         pb.directory(formattingScript.getParentFile().getParentFile().getParentFile());
 

@@ -14,11 +14,11 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package astyle_neon.preferences;
+package de.gerdiproject.astyle.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import astyle_neon.Activator;
+import de.gerdiproject.astyle.Activator;
 
 /**
  * This class offers constants that are used for setting and retrieving AStyle preferences.
