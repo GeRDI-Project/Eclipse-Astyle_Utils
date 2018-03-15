@@ -13,4 +13,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Kiel University
 Export-Package: de.gerdiproject.astyle,
  de.gerdiproject.astyle.handlers,
- de.gerdiproject.astyle.preferences
+ de.gerdiproject.astyle.listeners,
+ de.gerdiproject.astyle.preferences,
+ de.gerdiproject.astyle.utils

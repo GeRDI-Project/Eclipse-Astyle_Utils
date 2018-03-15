@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <?eclipse version="3.4"?>
 <plugin>
    <!-- Format File - Command Definition -->
@@ -80,9 +81,6 @@
         </command>
       </menuContribution>
    </extension>
-
-
-
 
    <!-- Format Project - Command Definition -->
    <extension point="org.eclipse.ui.commands">

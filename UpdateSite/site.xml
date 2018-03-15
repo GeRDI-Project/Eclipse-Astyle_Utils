@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
    <description name="AStyle">
-      https://build.se.informatik.uni-kiel.de/eus/astyle/
-A simple AStyle plugin that allows to format the current project.
+      A simple AStyle plugin that allows to format the current project.
    </description>
    <feature url="features/AStyle_Feature_1.1.0.jar" id="AStyle_Feature" version="1.1.0">
       <category name="astyleFormatting"/>
