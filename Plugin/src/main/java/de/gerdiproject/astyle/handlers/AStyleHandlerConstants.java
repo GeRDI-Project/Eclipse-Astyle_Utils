@@ -59,8 +59,8 @@ public class AStyleHandlerConstants
     public static final String SAVE_COMMAND = "org.eclipse.ui.file.save";
     public static final String SAVE_AS_COMMAND = "org.eclipse.ui.file.saveAs";
     public static final String SAVE_ALL_COMMAND = "org.eclipse.ui.file.saveAll";
-    public static final String FORMAT_PROJECT_COMMAND = "AStyle_Neon.commands.formatProjectCommand";
-    public static final String FORMAT_FILE_COMMAND = "AStyle_Neon.commands.formatFileCommand";
+    public static final String FORMAT_PROJECT_COMMAND = "AStyle.commands.formatProjectCommand";
+    public static final String FORMAT_FILE_COMMAND = "AStyle.commands.formatFileCommand";
     public static final String ECLIPSE_FORMAT_JAVA_COMMAND = "org.eclipse.jdt.ui.edit.text.java.format";
 
 
