@@ -25,7 +25,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
 /**
- * The AStyle preference page that can be found in Window > Preferences > AStyle.
+ * The AStyle preference page that can be found in Window > Preferences >
+ * AStyle.
  *
  * @author Robin Weiss
  *
@@ -49,7 +50,7 @@ public class AStylePreferencePage extends FieldEditorPreferencePage implements I
 
 
     @Override
-    public void init(IWorkbench arg0)
+    public void init(IWorkbench workbench)
     {
         setPreferenceStore(AStylePreferenceConstants.STORE);
         setDescription(AStylePreferenceConstants.PREFERENCES_DESCRIPTION);
@@ -67,7 +68,8 @@ public class AStylePreferencePage extends FieldEditorPreferencePage implements I
 
 
     /**
-     * Creates an editable, browsable field, that aims to select the AStyle bin folder.
+     * Creates an editable, browsable field, that aims to select the AStyle bin
+     * folder.
      *
      * @return the UI component of the editable field
      */
@@ -81,7 +83,8 @@ public class AStylePreferencePage extends FieldEditorPreferencePage implements I
 
 
     /**
-     * Creates an editable, browsable field, that aims to select an AStyle options file.
+     * Creates an editable, browsable field, that aims to select an AStyle
+     * options file.
      *
      * @return the UI component of the editable field
      */
@@ -112,7 +115,8 @@ public class AStylePreferencePage extends FieldEditorPreferencePage implements I
 
 
     /**
-     * Creates radio buttons for selecting the means of displaying feedback messages.
+     * Creates radio buttons for selecting the means of displaying feedback
+     * messages.
      *
      * @return the UI component of the radio group
      */

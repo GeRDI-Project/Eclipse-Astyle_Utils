@@ -35,6 +35,7 @@ import de.gerdiproject.astyle.handlers.AStyleHandlerConstants;
 
 /**
  * This helper class offers static methods for retrieving Eclipse UI elements.
+ *
  * @author Robin Weiss
  */
 public class AStyleEclipseUtils
@@ -49,16 +50,14 @@ public class AStyleEclipseUtils
 
 
     /**
-     * Retrieves Eclipse action bars.
+     * Retrieves the Eclipse action bars.
      *
      * @param event the event that triggered the message
      * @return Eclipse action bars
      */
     public static IActionBars getActionBars(ExecutionEvent event)
     {
-        final IEditorPart editor = getActiveWorkbenchWindow(event)
-                                   .getActivePage()
-                                   .getActiveEditor();
+        final IEditorPart editor = getActiveWorkbenchWindow(event).getActivePage().getActiveEditor();
 
         // check if there is an active editor
         if (editor != null)
@@ -95,15 +94,18 @@ public class AStyleEclipseUtils
 
 
     /**
-     * Retrieves the file path of the file that is selected in the Project Explorer.
-     * If the Editor is focussed, retrieves the path of the edited file.
+     * Retrieves the file path of the file that is selected in the Project
+     * Explorer. If the Editor is focussed, retrieves the path of the edited
+     * file.
      *
-     * @return the file path, or null if there is no active editor and nothing selected in the project explorer
+     * @return the file path, or null if there is no active editor and nothing
+     *         selected in the project explorer
      */
     public static String getFilePathOfSelectedFile(ExecutionEvent event)
     {
         // check which window is focussed
-        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
+        boolean isExplorerFocussed =
+            HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
         IWorkbenchWindow window = getActiveWorkbenchWindow(event);
 
         // try to get the file that is focussed in the Explorer
@@ -116,9 +118,7 @@ public class AStyleEclipseUtils
                 IAdaptable adaptable = (IAdaptable) selection.getFirstElement();
 
                 if (adaptable != null)
-                    return adaptable.getAdapter(IResource.class)
-                           .getLocation()
-                           .toOSString();
+                    return adaptable.getAdapter(IResource.class).getLocation().toOSString();
             }
         }
 
@@ -126,11 +126,7 @@ public class AStyleEclipseUtils
             window.getActivePage().getActiveEditor();
 
         if (activeEditor != null)
-            return activeEditor
-                   .getEditorInput()
-                   .getAdapter(IResource.class)
-                   .getLocation()
-                   .toOSString();
+            return activeEditor.getEditorInput().getAdapter(IResource.class).getLocation().toOSString();
         else
             return null;
     }
@@ -139,16 +135,17 @@ public class AStyleEclipseUtils
     /**
      * Retrieves the currently active Project in Eclipse via an event.
      *
-     * @param event
-     *            the event that triggered the command
-     * @return a project that is associated with a currently selected file, or null if the project could not be retrieved
+     * @param event the event that triggered the command
+     * @return a project that is associated with a currently selected file, or
+     *         null if the project could not be retrieved
      */
     public static IProject getActiveProject(ExecutionEvent event)
     {
         IProject currentProject = null;
 
         // check which window is focussed
-        boolean isExplorerFocussed = HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
+        boolean isExplorerFocussed =
+            HandlerUtil.getActivePartId(event).endsWith(AStyleHandlerConstants.EXPLORER_SUFFIX);
         final IWorkbenchWindow window = getActiveWorkbenchWindow(event);
 
         // get an adaptable in order to retrieve its project
@@ -192,7 +189,8 @@ public class AStyleEclipseUtils
     /**
      * Returns the active workbench window.
      *
-     * @param event the event for which this window is required, or null if no event was fired
+     * @param event the event for which this window is required, or null if no
+     *            event was fired
      *
      * @return the active workbench window
      */

@@ -32,7 +32,7 @@ import de.gerdiproject.astyle.utils.AStyleEclipseUtils;
 public class SaveListener implements IExecutionListener
 {
     @Override
-    public void postExecuteSuccess(final String action, final Object arg1)
+    public void postExecuteSuccess(final String action, final Object returnValue)
     {
         switch (action) {
             case AStyleHandlerConstants.SAVE_COMMAND:
